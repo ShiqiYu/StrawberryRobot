@@ -1,6 +1,8 @@
 import time 
 import cv2 as cv
 import numpy as np
+# lib.Arm7Bot is a Python class for PineCone.ai robotic arm
+# You should change the following line of code to your own robotic arm driver
 from lib.Arm7Bot import Arm7Bot
 
 region_rows = 64
@@ -56,7 +58,7 @@ def findStraberry( bgr_image ):
 # Usually:  "/dev/cu.SLAB_USBtoUART" on Mac OS
 #           "/dev/ttyUSB0" on Linux
 #           'COM1' on Windows
-arm = Arm7Bot("/dev/ttyUSB0") 
+arm = Arm7Bot("/dev/ttyUSB0") #please adjust according to your own robotic arm
 
 # capture frames from a camera with device index=0 by OpenCV
 cap = cv.VideoCapture(0)
@@ -77,6 +79,8 @@ while True:
     if(object_color == 'no strawberry'):
         continue
 
+    # arm.setIK6() is a function to control PineCone.ai robotic arm,
+    # you should change to functions of your own robotic arm
     arm.setIK6([0, 200, 150], [0, 0, -1]) #move to [x=0,y=200,=150]
     time.sleep(1)
     arm.setIK6([0, 200, 20], [0, 0, -1]) #down
