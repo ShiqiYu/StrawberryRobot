@@ -7,27 +7,28 @@ from lib.Arm7Bot import Arm7Bot
 
 region_rows = 64
 region_cols = 64
-def findStraberry( bgr_image ):
+def findStrawberry( bgr_image ):
     rows, cols, _ = bgr_image.shape
     #crop the center region of the image
     bgr_region = frame[int(rows/2)-region_rows:int(rows/2)+region_rows,
                    int(cols/2)-region_cols:int(cols/2)+region_cols]
     
     img_hsv=cv.cvtColor(bgr_region, cv.COLOR_BGR2HSV)
-    # lower mask (0-10)
+
+    # red mask1 (0-10)
     lower_red = np.array([0,50,50])
     upper_red = np.array([10,255,255])
     mask0 = cv.inRange(img_hsv, lower_red, upper_red)
-    # upper mask (170-180)
-    lower_red = np.array([170,50,50])
+    # dark red mask2
+    lower_red = np.array([160,50,50])
     upper_red = np.array([180,255,255])
     mask1 = cv.inRange(img_hsv, lower_red, upper_red)
-    # join my masks
+    # join two masks
     maskRed = mask0+mask1
     
-    # upper mask (170-180)
+    # yellow-green mask
     lower_green = np.array([20,50,50])
-    upper_green = np.array([40,255,255])
+    upper_green = np.array([60,255,255])
     maskGreen = cv.inRange(img_hsv, lower_green, upper_green)
 
     red_ratio = cv.sumElems(maskRed)
@@ -69,7 +70,7 @@ while True:
     ret, frame = cap.read() #the buffered one, read and throw it
     ret, frame = cap.read() #this one
 
-    object_color = findStraberry(frame)
+    object_color = findStrawberry(frame)
     print(object_color)
         
     # Wait for 1ms, press q to exit
@@ -81,14 +82,14 @@ while True:
 
     # arm.setIK6() is a function to control PineCone.ai robotic arm,
     # you should change to functions of your own robotic arm
-    arm.setIK6([0, 200, 150], [0, 0, -1]) #move to [x=0,y=200,=150]
+    arm.setIK6([0, 200, 150], [0, 0, -1]) #move to [x=0,y=200,z=150]
     time.sleep(1)
-    arm.setIK6([0, 200, 20], [0, 0, -1]) #down
+    arm.setIK6([0, 200, 40], [0, 0, -1]) #down
     time.sleep(1)
     
     arm.setAngle(6,90) #open hand
     time.sleep(1)
-    arm.setAngle(6,30) #close hand
+    arm.setAngle(6,15) #close hand
     time.sleep(1)
     
     arm.setIK6([0, 200, 150], [0, 0, -1]) #up
